@@ -1,0 +1,71 @@
+#include<Wire.h>
+int slaveAddress=3;
+int x=0;
+int button=13;
+int b=0;
+int ps=0;
+int push=0;
+int p=0;
+void setup()
+{
+  pinMode(button, INPUT);
+  Wire.begin();
+  Serial.begin(9600);
+}
+
+void loop()
+{
+  b=digitalRead(button);
+  if(b!=ps)
+  {
+    if(b==HIGH)
+    {
+      push++;
+    }
+    delay(50);
+  }
+  ps=b;
+  p=(push%2);
+
+
+  if(p==1)
+ {
+   x=1;
+ }
+  else
+    x=2;
+
+Wire.beginTransmission( slaveAddress ); // transmit to device #9
+Wire.write(x); // sends x
+Wire.endTransmission(); // stop transmitting
+delay(20);
+
+}
+---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//slave
+#include<Wire.h>
+int led=13;
+int x=0;
+char message;
+
+void setup()
+{
+  pinMode(led, OUTPUT);
+  Wire.begin(3);
+ Wire.onReceive(receiveEvent);
+}
+void receiveEvent(int bytes) {
+  x = Wire.read();    // read one character from the I2C
+}
+
+void loop()
+{
+ if (x == 1) {
+    digitalWrite(led, HIGH);
+  }
+  //If value received is 3 blink LED for 400 ms
+  if (x == 2) {
+    digitalWrite(led, LOW);
+  }
+
+}

@@ -1,0 +1,19 @@
+void setup()
+{
+ pinMode(3,OUTPUT);
+}
+
+void loop()
+{
+ digitalWrite(3,HIGH);
+  delayMicroseconds(2200);// gets the motor to 180 degrees
+  digitalWrite(3,LOW);
+  delay(10);
+  
+  digitalWrite(3,HIGH);
+  delayMicroseconds(500);// gets the motor to 0 degrees
+  digitalWrite(3,LOW);
+  delay(10);
+  
+  
+}

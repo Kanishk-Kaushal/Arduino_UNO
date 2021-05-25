@@ -1,0 +1,114 @@
+
+int RD = 5;
+int LD = 6;
+int LS = 10;
+int RS = 11;
+
+// define joystick pins
+int joystick_x = A0;
+int joystick_y = A1;
+
+//read values from the analog pin
+int JX = 0;
+int JY = 0;
+
+void setup() {
+  // put your setup code here, to run once:
+  pinMode(RD, OUTPUT);
+  pinMode(LD, OUTPUT);
+  pinMode(LS, OUTPUT);
+  pinMode(RS, OUTPUT);
+  pinMode(joystick_x, INPUT);
+  pinMode(joystick_y, INPUT);
+  Serial.begin(9600);
+
+}
+
+void loop() {
+  int yAxis,xAxis;
+  yAxis=JY;
+  xAxis=JX;
+ int PR,PL;
+ JX=analogRead(joystick_x);
+ JY=analogRead(joystick_y);
+ 
+   Serial.print("X = ");
+      Serial.print(xAxis);
+      Serial.print(" Y = ");  
+      Serial.print(yAxis);
+     
+    
+     
+
+// Y-axis used for forward and backward control
+    if (yAxis < 504) {
+    // Set Right Motors backward
+    digitalWrite(LD, LOW);
+       // Set Left Motors backward
+    digitalWrite(RD, LOW);
+    
+    
+    // Convert the declining Y-axis readings for going backward from 470 to 0 into 0 to 255 value for the PWM signal for increasing the motor speed
+    PR  = map(yAxis, 504, 0, 0, 255);
+    PL   = map(yAxis, 504, 0, 0, 255);
+  }
+
+else if (yAxis >  506) {
+    // Set Right Motors forward
+    digitalWrite(LD, HIGH);
+    
+    // Set Left Motors forward
+    digitalWrite(RD, HIGH);
+
+ 
+    // Convert the increasing Y-axis readings for going forward from 550 to 1023 into 0 to 255 value for the PWM signal for increasing the motor speed
+    PR  = map(yAxis, 504, 1023, 0, 255);
+    PL   = map(yAxis, 504, 1023, 0, 255);
+  }
+  // If joystick stays in middle the motors are not moving
+  else {
+    PR  = 0;
+    PL   = 0;
+  }
+
+// X-axis used for left and right control
+  if (xAxis < 518) {
+    // Convert the declining X-axis readings from 470 to 0 into increasing 0 to 255 value
+    int xmap = map(xAxis, 518, 0, 0, 255);
+    // Move to left - decrease left motor speed, increase right motor speed
+    PL = PL - xmap;
+    PR = PR + xmap;
+    // Confine the range from 0 to 255
+    if (PL < 0) {
+      PL = 0;
+    }
+    if (PR > 255) {
+      PR = 255;
+    }
+  }
+  if (xAxis > 518) {
+    // Convert the increasing X-axis readings from 550 to 1023 into 0 to 255 value
+    int xmap = map(xAxis, 518, 1023, 0, 255);
+    // Move right - decrease right motor speed, increase left motor speed
+    PL = PL + xmap;
+    PR = PR - xmap;
+    // Confine the range from 0 to 255
+    if (PL > 255) {
+      PL = 255;
+    }
+    if (PR < 0) {
+      PR = 0;
+    }
+  }
+  
+
+  analogWrite(RS, PR); // Send PWM signal to motor A
+ 
+  analogWrite(LS, PL); // Send PWM signal to motor B
+ 
+     
+   
+      
+      
+      
+      }

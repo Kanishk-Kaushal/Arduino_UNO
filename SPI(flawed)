@@ -1,0 +1,97 @@
+//master
+#include<SPI.h>                        
+#define push 7
+          
+
+int x;
+int value;
+
+void setup (void)
+
+{
+  Serial.begin(9600);               
+  
+  pinMode(push,INPUT);              
+                   
+  
+  SPI.begin();                            
+  SPI.setClockDivider(SPI_CLOCK_DIV8); 
+  digitalWrite(SS,HIGH);                  
+}
+
+void loop(void)
+{
+  byte m_send,m_receive;          
+
+  value = digitalRead(push); 
+
+  if(value == HIGH)                
+  {
+    x = 1;
+  }
+  else
+  {
+    x = 0;
+  }
+  
+  digitalWrite(SS, LOW);                  
+  
+  m_send = x;                            
+  m_receive=SPI.transfer(m_send); 
+  
+  
+}
+
+
+
+
+//slave
+#include<SPI.h>
+
+#define outputLED 7
+
+volatile boolean received;
+volatile byte Slavereceived,Slavesend;
+int buttonvalue;
+int x;
+
+void setup()
+
+{
+  Serial.begin(9600);
+  
+   
+  pinMode(outputLED,OUTPUT);               
+  pinMode(MISO,OUTPUT);                  
+
+  SPCR |= _BV(SPE);                  
+  received = false;
+
+  SPI.attachInterrupt();                  
+  
+}
+
+ISR (SPI_STC_vect)                        
+{
+  Slavereceived = SPDR;         
+  received = true;                        
+}
+
+void loop()
+{  
+ if(received)                           
+   {
+      if (Slavereceived==1) 
+      {
+        digitalWrite(outputLED,HIGH);       
+      }else
+      {
+        digitalWrite(outputLED,LOW);          
+      }
+      
+    
+      
+                        
+  delay(1000);
+}
+}

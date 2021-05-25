@@ -1,0 +1,28 @@
+
+
+int servo = 3;
+
+int angle;
+int pwm;
+
+void setup()
+{
+ pinMode(servo, OUTPUT);
+}
+
+void loop ()
+{
+ for (angle = 0; angle <= 140; angle += 5)  {
+   servoPulse(servo, angle);  }
+ for (angle = 140; angle >= 0; angle -= 5)  {
+   servoPulse(servo, angle);  }
+}
+ 
+void servoPulse (int servo, int angle)
+{
+ pwm = (angle*11) + 500;      
+ digitalWrite(servo, HIGH);
+ delayMicroseconds(pwm);
+ digitalWrite(servo, LOW);
+ delay(50);                  
+}

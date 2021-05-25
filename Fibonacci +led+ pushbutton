@@ -1,0 +1,45 @@
+const int buttonPin = 2;
+int pushCount = 0;
+int state = 0;
+int previousState = 0;
+int f;
+int previousCount = -1;
+
+void setup(){
+  pinMode(buttonPin, INPUT);
+  Serial.begin(9600);
+}
+
+void loop(){
+  state = digitalRead(buttonPin);
+  if(state != previousState){
+    if(state == HIGH){
+      pushCount++;
+      
+    }
+    delay(50);
+  }
+  previousState = state;
+  if (pushCount != previousCount){
+    f = fib(pushCount);
+    previousCount = pushCount;
+    Serial.println(f);
+    light(f);
+  }
+}
+
+int fib(int num){
+  if (num<2){
+    return num ;
+  }
+  return fib(num-1) + fib(num-2);
+}
+
+void light(int n){
+  for(int i = 0;i<n;i++){
+    digitalWrite(13,HIGH);
+    delay(1000);
+    digitalWrite(13,LOW);
+    delay(1000);
+  }
+}
